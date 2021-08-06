@@ -5,10 +5,10 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class CustUser(AbstractUser):
+    email = models.EmailField(blank=False, null=False)
     ...
 
 
-class BusinessUser(AbstractUser):
-    name = models.CharField()
-    business_name = models.CharField()
+class CorpUser(CustUser):
+    business_name = models.CharField(max_length=100)
     restaurants = models.ForeignKey(Restaurant, blank=True, null=True, on_delete=models.CASCADE)
