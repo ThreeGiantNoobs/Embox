@@ -9,9 +9,17 @@ class Cuisines(models.Model):
         return f'cuisine_name: {self.cuisine_name}'
 
 
+class Dishes(models.Model):
+    name = models.CharField(verbose_name='Dish Name', max_length=200)
+    veg = models.BooleanField(verbose_name='Veg or not')
+    price = models.IntegerField(verbose_name='Price')
+    picture = models.ImageField(upload_to='images/dishes/', verbose_name='Picture of Dish', blank=True, null=True)
+
+
 class Restaurant(models.Model):
     restaurant_id = models.BigAutoField(verbose_name='Restaurant ID', primary_key=True)
     restaurant_name = models.CharField(null=False, verbose_name='Restaurant Name', max_length=100)
+    pictures = models.ImageField(upload_to='images/restaurant', blank=True, null=True)
     country = models.IntegerField(default=1, verbose_name='Country ID')
     city = models.CharField(null=False, verbose_name='City Name', max_length=100)
     address = models.CharField(null=False, verbose_name='Address', max_length=255)

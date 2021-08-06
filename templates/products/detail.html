@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+{{ object.title }} - {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class='row'>
+    <div class='col col-md-10'>
+        
+        {% include "products/snippets/product_detail.html" with product=object %}
+
+        <div class='d-block d-md-none'>
+            {% include "products/snippets/order_btn.html" with product=object can_order=can_order form=form %}
+        </div>
+
+
+        {% include 'products/snippets/product_content.html' with product=object %}
+    </div>
+
+    <div class='col-md-2 d-md-block d-none'>
+
+        {% include "products/snippets/order_btn.html" with product=object can_order=can_order form=form %}
+
+    </div>
+
+</div>
+
+{% endblock content %}
