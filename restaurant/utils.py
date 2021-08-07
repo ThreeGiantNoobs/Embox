@@ -1,6 +1,14 @@
 from django.db.models import Q
 
-from .models import Restaurant
+from .models import Restaurant, Order
+
+from fpdf import FPDF
+
+
+# class PDF(FPDF):
+#     def header(self):
+#         self.image('logo.png', 10, 8, 25)
+
 
 
 def filter_args(veg: bool = None, has_table_booking: bool = None, is_delivering_now: bool = None, max_cost: int = None,
@@ -39,7 +47,11 @@ def location_filter(query_set, latitude=None, longitude=None, distance: int = 10
     return query_set
 
 
-# TODO: add all params to separate search as well
+# TODO: add all params to separate search as well or remove them
+
+"""-----------------------------------------------------------------------------------------------------------------"""
+
+
 def search_restaurant(query='', cuisines: list = None, country_id: int = 1, latitude=None,
                       longitude=None, min_rating=0, sort_by='-rating', distance: int = 10):
     args = {}
@@ -69,6 +81,9 @@ def search_dishes(query='', cuisines: list = None, country_id: int = 1, latitude
     query_set = location_filter(query_set, latitude=latitude, longitude=longitude, distance=distance)
     query_set = query_set.order_by(sort_by)
     return query_set
+
+
+"""-----------------------------------------------------------------------------------------------------------------"""
 
 
 def universal_search(query='', cuisines: list = None, country_id: int = 1, latitude=None, max_cost: int = None,

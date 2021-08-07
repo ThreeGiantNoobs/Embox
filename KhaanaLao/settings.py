@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -25,7 +24,8 @@ SECRET_KEY = 'django-insecure-2(075pr35pwmk=gg1rur7if)a7dz@r+)#!d^a!8c)q$o@ooy=+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Phoenix16700.pythonanywhere.com'.lower(), 'b8087c285390.ngrok.io', 'localhost']
+ALLOWED_HOSTS = ['*']
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,14 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     
     'rest_framework',
-    'restaurant.apps.RestaurantConfig',
     'accounts.apps.AccountsConfig',
-    
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
+    
     'allauth.socialaccount.providers.google',
+    
+    'restaurant.apps.RestaurantConfig',
+
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -58,7 +59,6 @@ SITE_ID = 1
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,7 +92,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'KhaanaLao.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -102,7 +101,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -124,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -137,7 +134,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

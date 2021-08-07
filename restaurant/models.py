@@ -19,8 +19,8 @@ class Currency(models.Model):
 
 class Restaurant(models.Model):
     # TODO: REMOVE BLANK=True and null=True
-    owner = models.ForeignKey(CorpUser, blank=True, null=True, on_delete=models.CASCADE)
     restaurant_id = models.BigAutoField(verbose_name='Restaurant ID', primary_key=True)
+    owner = models.ForeignKey(CorpUser, on_delete=models.CASCADE)
     restaurant_name = models.CharField(null=False, verbose_name='Restaurant Name', max_length=100)
     pictures = models.ImageField(upload_to='images/restaurant', blank=True, null=True)
     country = models.IntegerField(default=1, verbose_name='Country ID')
@@ -59,10 +59,22 @@ class Dishes(models.Model):
 
 class Order(models.Model):
     order_id = models.BigAutoField(verbose_name='Order ID', primary_key=True)
+    restaurant = models.ForeignKey(Restaurant, null=True, on_delete=models.SET_NULL)
     buyer = models.ForeignKey(CustUser, null=True, on_delete=models.SET_NULL)
     instruction = models.TextField(blank=True, null=True)
+    delivery_address = models.TextField(verbose_name='Address', null=True, blank=True)
+    delivery_charges = models.IntegerField(verbose_name='delivery_charges')
+    price = models.IntegerField(validators=[MinValueValidator(0)])
+    total_price = models.IntegerField(validators=[MinValueValidator(0)])
+    
+    def __str__(self):
+        return f'{self.order_id} {self.buyer} {self.price}'
 
 
 class DishOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField(verbose_name='Quantity', default=1, validators=[MinValueValidator(1)])
     dish = models.ForeignKey(Dishes, null=True, on_delete=models.SET_NULL)
+    
+    def __str__(self):
+        return f'{self.order} {self.dish}'
