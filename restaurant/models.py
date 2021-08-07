@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from accounts.models import CustUser, CorpUser
 
 
 class Cuisines(models.Model):
@@ -17,6 +18,8 @@ class Currency(models.Model):
 
 
 class Restaurant(models.Model):
+    # TODO: REMOVE BLANK=True and null=True
+    owner = models.ForeignKey(CorpUser, blank=True, null=True, on_delete=models.CASCADE)
     restaurant_id = models.BigAutoField(verbose_name='Restaurant ID', primary_key=True)
     restaurant_name = models.CharField(null=False, verbose_name='Restaurant Name', max_length=100)
     pictures = models.ImageField(upload_to='images/restaurant', blank=True, null=True)
@@ -45,9 +48,21 @@ class Restaurant(models.Model):
 class Dishes(models.Model):
     name = models.CharField(verbose_name='Dish Name', max_length=200)
     veg = models.BooleanField(verbose_name='Veg or not')
+    eta = models.IntegerField(verbose_name='ETA to make the dish')
     price = models.IntegerField(verbose_name='Price')
     picture = models.ImageField(upload_to='images/dishes/', verbose_name='Picture of Dish', blank=True, null=True)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return f'{self.name}: {self.restaurant.restaurant_name}'
+
+
+class Order(models.Model):
+    order_id = models.BigAutoField(verbose_name='Order ID', primary_key=True)
+    buyer = models.ForeignKey(CustUser, null=True, on_delete=models.SET_NULL)
+    instruction = models.TextField(blank=True, null=True)
+
+
+class DishOrder(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    dish = models.ForeignKey(Dishes, null=True, on_delete=models.SET_NULL)

@@ -1,5 +1,4 @@
 from django.db import models
-from restaurant.models import Restaurant
 from django.contrib.auth.models import AbstractUser
 
 
@@ -11,4 +10,3 @@ class CustUser(AbstractUser):
 
 class CorpUser(CustUser):
     business_name = models.CharField(max_length=100)
-    restaurants = models.ForeignKey(Restaurant, blank=True, null=True, on_delete=models.CASCADE)
