@@ -41,7 +41,7 @@ def corpRegister(request: Request, backend='django.contrib.auth.backends.ModelBa
 
 @api_view(['POST'])
 @checkLoggedIn
-def login(request: Request):
+def accLogin(request: Request):
     serialed = authenticate(username=request.data.get('username'),
                             password=request.data.get('password'))
     isUser = CustUser.objects.filter(username=request.data.get('username'))

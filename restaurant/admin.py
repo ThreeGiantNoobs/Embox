@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Restaurant, Cuisines, Dishes, Currency
+from .models import Restaurant, Cuisines, Dishes, Currency, Order, DishOrder
 
 # Register your models here.
 

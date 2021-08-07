@@ -91,3 +91,11 @@ def universal_search(query='', cuisines: list = None, country_id: int = 1, latit
     query_set = query_set.order_by(sort_by)
     query_set = query_set.all()[start:start + chunk]
     return query_set
+
+
+def export_invoice_pdf(order: Order, path: str = None):
+    dishes = list[order.dishorder_set.values().all()]
+    order_id = order.order_id
+    restaurant: Restaurant = order.restaurant
+    
+    ...
