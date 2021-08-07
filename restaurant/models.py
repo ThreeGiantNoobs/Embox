@@ -9,11 +9,11 @@ class Cuisines(models.Model):
         return f'cuisine_name: {self.cuisine_name}'
 
 
-class Dishes(models.Model):
-    name = models.CharField(verbose_name='Dish Name', max_length=200)
-    veg = models.BooleanField(verbose_name='Veg or not')
-    price = models.IntegerField(verbose_name='Price')
-    picture = models.ImageField(upload_to='images/dishes/', verbose_name='Picture of Dish', blank=True, null=True)
+class Currency(models.Model):
+    name = models.CharField(default=None, max_length=30)
+
+    def __str__(self):
+        return '%s' % self.name
 
 
 class Restaurant(models.Model):
@@ -28,7 +28,7 @@ class Restaurant(models.Model):
     longitude = models.FloatField(validators=[MaxValueValidator(180), MinValueValidator(-180)])
     latitude = models.FloatField(validators=[MaxValueValidator(85.05), MinValueValidator(-85.05)])
     avg_cost = models.IntegerField(verbose_name='Average cost for two')
-    currency = models.CharField(default='Indian Rupees(Rs.)', max_length=50)
+    currency = models.ManyToManyField(Currency)
     cuisines = models.ManyToManyField(Cuisines)
     has_table_booking = models.BooleanField(verbose_name='Allow Table Booking')
     is_delivering_now = models.BooleanField(verbose_name='Delivering now')
@@ -40,3 +40,14 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f'restaurant_id: {self.restaurant_id}, restaurant_name: {self.restaurant_name}'
+
+
+class Dishes(models.Model):
+    name = models.CharField(verbose_name='Dish Name', max_length=200)
+    veg = models.BooleanField(verbose_name='Veg or not')
+    price = models.IntegerField(verbose_name='Price')
+    picture = models.ImageField(upload_to='images/dishes/', verbose_name='Picture of Dish', blank=True, null=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=None)
+
+    def __str__(self):
+        return f'{self.name}: {self.restaurant.restaurant_name}'
