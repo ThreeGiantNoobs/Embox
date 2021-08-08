@@ -7,7 +7,7 @@ from fpdf import FPDF
 from strsimpy.normalized_levenshtein import NormalizedLevenshtein
 
 from accounts.models import CustUser
-from .Exceptions import CartDiffRestaurantError
+from .Exceptions import CartDiffRestaurantError, DishDontExist
 from .models import Restaurant, Order, Dishes, DishOrder, CartDishOrder
 
 norm = NormalizedLevenshtein()
@@ -71,7 +71,6 @@ def location_filter(query_set, latitude=None, longitude=None, distance: int = 10
 # TODO: add all params to separate search as well or remove them
 
 """-----------------------------------------------------------------------------------------------------------------"""
-
 # def search_restaurant(query='', cuisines: list = None, country_id: int = 1, latitude=None,
 #                       longitude=None, min_rating=0, sort_by='-rating', distance: int = 10):
 #     args = {}
@@ -101,7 +100,6 @@ def location_filter(query_set, latitude=None, longitude=None, distance: int = 10
 #     query_set = location_filter(query_set, latitude=latitude, longitude=longitude, distance=distance)
 #     query_set = query_set.order_by(sort_by)
 #     return query_set
-
 
 """-----------------------------------------------------------------------------------------------------------------"""
 
@@ -229,8 +227,7 @@ def export_invoice_pdf(order: Order, path: str = None, debug: bool = False):
 def add_cart(user: CustUser, dish_id: int, inc_by: int = 1, delete=False):
     dish = Dishes.objects.filter(id=dish_id)
     if not dish.exists():
-        # TODO:
-        raise Exception()
+        raise DishDontExist()
     dish = dish[0]
     cart = user.cartdishorder_set.all()
     if cart.exists():

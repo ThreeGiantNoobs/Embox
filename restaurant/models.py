@@ -18,7 +18,6 @@ class Currency(models.Model):
 
 
 class Restaurant(models.Model):
-    # TODO: REMOVE BLANK=True and null=True
     restaurant_id = models.BigAutoField(verbose_name='Restaurant ID', primary_key=True)
     owner = models.ForeignKey(CorpUser, on_delete=models.CASCADE)
     restaurant_name = models.CharField(null=False, verbose_name='Restaurant Name', max_length=100)

@@ -9,6 +9,7 @@ from restaurant.models import Order, Restaurant, DishOrder, Dishes
 from restaurant.utils import search as se, add_cart
 from .serializer import SearchSerializer, RestaurantSerializer, CartDishOrderSerializer, CartChangesSerializer, \
     OrderInputSerializer
+from restaurant.Exceptions import DishDontExist, CartDiffRestaurantError
 
 
 def manipulate_search_params(data: dict):
@@ -53,13 +54,27 @@ def cart(request: Request):
             return Response({'error': serialized_edit_data.errors}, status=status.HTTP_400_BAD_REQUEST)
         change_data = serialized_edit_data.data
         print(change_data)
-        add_cart(user, dish_id=change_data['dish_id'], inc_by=change_data['inc_by'], delete=change_data.get('delete'))
+        try:
+            add_cart(user, dish_id=change_data['dish_id'], inc_by=change_data['inc_by'], delete=change_data.get('delete'))
+        except CartDiffRestaurantError:
+            return Response({'error': 'cart diff restaurant'}, status=status.HTTP_400_BAD_REQUEST)
+        except DishDontExist:
+            return Response({'error': 'DishDontExist'}, status=status.HTTP_400_BAD_REQUEST)
+
     query_set = user.cartdishorder_set.all()
     if not query_set.exists():
         return Response({'res': []}, status=status.HTTP_200_OK)
     data = query_set
     serialized_data = CartDishOrderSerializer(data, many=True)
     return Response({'res': serialized_data.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@auth
+def clear_cart(request: Request):
+    user: CustUser = request.user
+    user.cartdishorder_set.all().delete()
+    return Response({'msg': 'ok'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
