@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from accounts.models import CustUser, CorpUser
+from accounts.models import CorpUser, CustUser
 
 
 class Cuisines(models.Model):
@@ -74,7 +74,16 @@ class Order(models.Model):
 class DishOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField(verbose_name='Quantity', default=1, validators=[MinValueValidator(1)])
-    dish = models.ForeignKey(Dishes, null=True, on_delete=models.SET_NULL)
-    
+    dish = models.ForeignKey(Dishes, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
-        return f'{self.order} {self.dish}'
+        return f'{self.order.order_id} {self.dish}'
+
+
+class CartDishOrder(models.Model):
+    quantity = models.IntegerField(verbose_name='Quantity', default=1, validators=[MinValueValidator(1)])
+    dish = models.ForeignKey(Dishes, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustUser, verbose_name='Cart', null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.dish}'
