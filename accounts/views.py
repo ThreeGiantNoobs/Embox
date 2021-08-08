@@ -23,7 +23,7 @@ def custRegister(request: Request, backend='django.contrib.auth.backends.ModelBa
         return Response(serialed.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 @checkLoggedIn
 def corpRegister(request: Request, backend='django.contrib.auth.backends.ModelBackend'):
     serialed = CorpSerializer(data=request.data)

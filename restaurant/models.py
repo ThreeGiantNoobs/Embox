@@ -29,6 +29,7 @@ class Restaurant(models.Model):
     locality_verbose = models.CharField(null=False, verbose_name='Locality Landmarks', max_length=255)
     longitude = models.FloatField(validators=[MaxValueValidator(180), MinValueValidator(-180)])
     latitude = models.FloatField(validators=[MaxValueValidator(85.05), MinValueValidator(-85.05)])
+    picture_external = models.URLField(verbose_name='external image', null=True)
     avg_cost = models.IntegerField(verbose_name='Average cost for two')
     currency = models.ManyToManyField(Currency)
     cuisines = models.ManyToManyField(Cuisines)

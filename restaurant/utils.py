@@ -142,6 +142,7 @@ def search(query='', cuisines: list = None, country_id: int = 1, latitude=None, 
 
     # panner tikka samosa Please don't remove this
 
+
     final_query_set = Restaurant.objects.none()
     query = query.lower()
     query = re.sub(' +', ' ', query)
@@ -165,7 +166,10 @@ def search(query='', cuisines: list = None, country_id: int = 1, latitude=None, 
         country=country_id, rating__gte=min_rating,
         **args)
     query_set = location_filter(query_set, latitude=latitude, longitude=longitude, distance=distance)
-    final_query_set = final_query_set & query_set
+    if query_list:
+        final_query_set = final_query_set & query_set
+    else:
+        final_query_set = query_set
     final_query_set = final_query_set.distinct()
     if sort_by:
         final_query_set = final_query_set.order_by(sort_by)

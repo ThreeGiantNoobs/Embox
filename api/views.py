@@ -1,15 +1,18 @@
+import csv
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from accounts.decorators import auth
-from accounts.models import CustUser
-from restaurant.models import Order, Restaurant, DishOrder, Dishes
+from accounts.models import CustUser, CorpUser
+from restaurant.Exceptions import DishDontExist, CartDiffRestaurantError
+from restaurant.models import Order, Restaurant, DishOrder, Dishes, Cuisines, Currency
 from restaurant.utils import search as se, add_cart
 from .serializer import SearchSerializer, RestaurantSerializer, CartDishOrderSerializer, CartChangesSerializer, \
     OrderInputSerializer
-from restaurant.Exceptions import DishDontExist, CartDiffRestaurantError
+from django.contrib import auth as dj_auth
 
 
 def manipulate_search_params(data: dict):
@@ -55,7 +58,8 @@ def cart(request: Request):
         change_data = serialized_edit_data.data
         print(change_data)
         try:
-            add_cart(user, dish_id=change_data['dish_id'], inc_by=change_data['inc_by'], delete=change_data.get('delete'))
+            add_cart(user, dish_id=change_data['dish_id'], inc_by=change_data['inc_by'],
+                     delete=change_data.get('delete'))
         except CartDiffRestaurantError:
             return Response({'error': 'cart diff restaurant'}, status=status.HTTP_400_BAD_REQUEST)
         except DishDontExist:
@@ -112,3 +116,35 @@ def order(request: Request):
 
     user.cartdishorder_set.all().delete()
     return Response({'msg': 'success'}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def import_database(request: Request):
+    file_name = request.data.get('filename')
+    # user: CorpUser = request.user
+    user_id = request.user.id
+    user = CorpUser.objects.get(id=user_id)
+    print(type(user))
+    # if not isinstance(user, CorpUser):
+    #     return Response({'error': 'not a corp user'}, status=status.HTTP_400_BAD_REQUEST)
+    with open(file_name, newline='') as f:
+        reader = csv.reader(f)
+        currency = Currency.objects.all()[0]
+        for row in reader:
+            if row[0].isnumeric():
+                cuisines = row[9].split(',')
+                cuisene = []
+                for cuis in cuisines:
+                    cuis = cuis.strip()
+                cuisene.append(Cuisines.objects.create(cuisine_name=cuis))
+                obj = Restaurant.objects.create(restaurant_name=row[1], country=int(row[2]), address=row[3],
+                                                locality=row[5], longitude=float(row[7]), latitude=float(row[8]),
+                                                avg_cost=int(row[10]), is_delivering_now=True,
+                                                price_range=int(row[16]), owner=user,
+                                                has_table_booking=True if row[13] == 'Yes' else False,
+                                                rating=float(row[17]), picture_external=row[21])
+                obj.currency.add(currency)
+                for c in cuisene:
+                    obj.cuisines.add(c)
+
+                obj.save()

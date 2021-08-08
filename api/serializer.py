@@ -10,7 +10,7 @@ class SearchSerializer(serializers.Serializer):
         ('-avg_cost', 'avg_cost_rich'),
         ('-votes', 'votes'),
     ]
-    query = serializers.CharField(max_length=200, allow_blank=False, required=False)
+    query = serializers.CharField(max_length=200, allow_blank=True, required=False)
     cuisines = serializers.ListField(child=serializers.CharField(), required=False)
     latitude = serializers.FloatField(required=False)
     longitude = serializers.FloatField(required=False)
