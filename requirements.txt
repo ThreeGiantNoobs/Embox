@@ -6,7 +6,7 @@ click==8.0.1
 colorama==0.4.4
 cryptography==3.4.7
 defusedxml==0.7.1
-Django==3.2.12
+Django==3.2.13
 django-allauth==0.45.0
 django-ipware==3.0.7
 djangorestframework==3.12.4
