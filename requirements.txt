@@ -14,7 +14,7 @@ fpdf2==2.4.2
 gunicorn==20.1.0
 h11==0.12.0
 idna==3.2
-oauthlib==3.1.1
+oauthlib==3.2.1
 Pillow==9.0.1
 pycparser==2.20
 PyJWT==2.1.0
